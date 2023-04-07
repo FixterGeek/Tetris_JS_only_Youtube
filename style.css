@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 80px;
+  font-family: 'Press Start 2P';
+}
+
+#info {
+  max-width: 320px;
+}
+
+#main {
+  border: 2px solid;
+  border-radius: 9px;
+}
