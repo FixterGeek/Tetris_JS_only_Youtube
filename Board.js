@@ -1,4 +1,5 @@
-import { Tetromino } from './Tetromino.js';
+import { updatePoints } from "./Interfaz.js";
+import { Tetromino } from "./Tetromino.js";
 import {
   BLOCK_SIZE,
   COLORS,
@@ -6,7 +7,7 @@ import {
   ROWS,
   getRandomShape,
   movements,
-} from './constants.js';
+} from "./constants.js";
 
 export class Board {
   constructor(ctx, nextCtx) {
@@ -28,7 +29,7 @@ export class Board {
   }
 
   move() {
-    const p = movements['ArrowDown'](this.piece);
+    const p = movements["ArrowDown"](this.piece);
     if (this.isValid(p)) {
       this.piece.y = p.y;
       return true;
@@ -54,6 +55,7 @@ export class Board {
         this.grid.unshift(Array(COLS).fill(0));
       }
     });
+    updatePoints(lines);
   }
 
   freeze(piece) {
@@ -117,7 +119,7 @@ export class Board {
           BLOCK_SIZE,
           BLOCK_SIZE
         );
-        this.ctx.strokeStyle = '#222';
+        this.ctx.strokeStyle = "#222";
         this.ctx.strokeRect(
           x * BLOCK_SIZE,
           y * BLOCK_SIZE,
