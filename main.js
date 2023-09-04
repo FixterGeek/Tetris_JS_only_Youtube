@@ -1,7 +1,13 @@
 // imports
 //import { COLORS } from './constants.js';
 import { Board } from "./Board.js";
-import { updateTime } from "./Interfaz.js";
+import {
+  updateButton,
+  updatePoints,
+  // updateButton,
+  // updatePoints,
+  updateTime,
+} from "./interfaz.js";
 import { LEVELS, movements } from "./constants.js";
 
 let animationFrame;
@@ -22,20 +28,28 @@ const board = new Board(
   nextCanvas.getContext("2d")
 );
 
+export const gameOver = () => {
+  // cancelAnimationFrame(animationFrame) // Podrías asgurarte...
+  const ctx = mainCanvas.getContext("2d");
+  ctx.font = "48px sans-serif";
+  ctx.fillStyle = "white";
+  ctx.fillText("Game Over", 20, 100);
+  //   actualizamos el botón
+  updateButton("Reiniciar");
+};
+
 const animate = () => {
   // Esto solo sucede en la primer llamada
   time.initial = time.initial > 0 ? time.initial : performance.now();
 
-  let now = performance.now();
-  time.elapsed = now - time.start;
-  // console.log(time);
+  time.elapsed = performance.now() - time.start;
   if (time.elapsed > time.level) {
     time.start = performance.now(); // restart elapsed
-    // time.level = LEVELS[LEVELS.indexOf(time.level) + 1]; // next level?
-    if (board.move()) {
-    } else {
-      // game over
-    }
+    board.move();
+  }
+  // Verificamos si el juego acabó
+  if (board.gameOver) {
+    return gameOver();
   }
   // update info
   updateTime(performance.now() - time.initial);
@@ -45,8 +59,40 @@ const animate = () => {
   animationFrame = requestAnimationFrame(animate);
 };
 
+const pauseGame = () => {
+  cancelAnimationFrame(animationFrame);
+  animationFrame = undefined;
+  // drawing
+  const ctx = mainCanvas.getContext("2d");
+  ctx.font = "48px sans-serif";
+  ctx.fillStyle = "white";
+  ctx.fillText("Paused", 60, 100);
+  updateButton("Resume"); // interfaz
+};
+
+// main button
+const onClick = () => {
+  if (animationFrame) {
+    pauseGame();
+  } else {
+    updateButton("Pause");
+    animate();
+  }
+  if (board.gameOver) {
+    updateButton("pause");
+    board.init();
+    // No olvides reiniciar el tiempo y los puntos
+    time.elapsed = 0;
+    time.level = LEVELS[0];
+    time.start = performance.now();
+    time.initial = 0;
+    updatePoints(0, true); // reemplaza
+    animate();
+  }
+};
+
 // listeners
-document.querySelector("#start-btn").onclick = animate;
+document.querySelector("#start-btn").onclick = onClick;
 
 addEventListener("keydown", (event) => {
   const getNewPiece = movements[event.key];

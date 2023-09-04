@@ -1,4 +1,4 @@
-import { updatePoints } from "./Interfaz.js";
+// import { updatePoints } from "./interfaz.js";
 import { Tetromino } from "./Tetromino.js";
 import {
   BLOCK_SIZE,
@@ -8,6 +8,7 @@ import {
   getRandomShape,
   movements,
 } from "./constants.js";
+import { updatePoints } from "./interfaz.js";
 
 export class Board {
   constructor(ctx, nextCtx) {
@@ -17,6 +18,7 @@ export class Board {
   }
 
   init() {
+    this.gameOver = false;
     // this.grid = Array(ROWS).fill(Array(COLS).fill(0));
     this.grid = Array.from({ length: ROWS }, () =>
       Array.from({ length: COLS }, () => 0)
@@ -66,6 +68,7 @@ export class Board {
         }
       });
     });
+    this.gameOver = !this.grid[0].every((num) => num === 0);
   }
 
   isValid(piece) {
